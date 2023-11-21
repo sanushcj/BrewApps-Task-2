@@ -1,4 +1,4 @@
-import 'package:brewapps_task02/features/home/homepage.dart';
+import 'package:brewapps_task02/features/home/page/homepage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -8,9 +8,7 @@ class ScreenNavigation extends StatelessWidget {
   ScreenNavigation({Key? key}) : super(key: key);
   static ValueNotifier<int> selectedPageIndex = ValueNotifier(0);
   final _pages = [
-    const MyHomePage(
-      title: '',
-    ),
+    const MyHomePage(),
   ];
   @override
   Widget build(BuildContext context) {

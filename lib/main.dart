@@ -1,6 +1,6 @@
 import 'package:brewapps_task02/features/bottombar/mybottomnavbar.dart';
 import 'package:flutter/material.dart';
-import 'features/home/homepage.dart';
+import 'features/home/page/homepage.dart';
 
 void main() {
   runApp(const MyApp());
