@@ -1,6 +1,8 @@
 import 'package:brewapps_task02/features/top_rated/services/toprated_controller.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 
 import '../../../common/feedtile.dart';
@@ -29,9 +31,9 @@ class TopRatedpage extends StatelessWidget {
           },
           child: Column(children: [
             rrHeight20,
-            GetBuilder<TopRatedController>(
-              builder: (mycontroller) => Expanded(
-                child: mycontroller.loading.value == true
+            Obx(
+              () => Expanded(
+                child: Get.find<TopRatedController>().loading.value == true
                     ? ListView.separated(
                         physics: const BouncingScrollPhysics(),
                         itemBuilder: (context, index) =>
@@ -40,24 +42,46 @@ class TopRatedpage extends StatelessWidget {
                         itemCount: 5)
                     : ListView.separated(
                         physics: const BouncingScrollPhysics(),
-                        itemBuilder: (context, index) => GestureDetector(
+                        itemBuilder: (context, index) {
+                          return Slidable(
+                            endActionPane:
+                                ActionPane(motion: BehindMotion(), children: [
+                              SlidableAction(
+                                backgroundColor: Pallete.redColor,
+                                icon: CupertinoIcons.delete,
+                                onPressed: (context) =>
+                                    Get.find<TopRatedController>()
+                                        .deletetheMovieNow(index),
+                              )
+                            ]),
+                            child: GestureDetector(
                               onTap: () {
                                 Get.to(OpenPAGE(
-                                  detailsNow: mycontroller.topRatedList[index],
+                                  detailsNow: Get.find<TopRatedController>()
+                                      .topfoundResult[index],
                                 ));
                               },
-                              key:
-                                  ValueKey(mycontroller.topRatedList[index].id),
+                              key: ValueKey(Get.find<TopRatedController>()
+                                  .topfoundResult[index]
+                                  .id),
                               child: FeedTile(
-                                title: mycontroller.topRatedList[index].title,
-                                img:
-                                    mycontroller.topRatedList[index].posterPath,
-                                subtitle:
-                                    mycontroller.topRatedList[index].overview,
+                                title: Get.find<TopRatedController>()
+                                    .topfoundResult[index]
+                                    .title,
+                                img: Get.find<TopRatedController>()
+                                    .topfoundResult[index]
+                                    .posterPath,
+                                subtitle: Get.find<TopRatedController>()
+                                    .topfoundResult[index]
+                                    .overview,
                               ),
                             ),
+                          );
+                        },
                         separatorBuilder: (context, index) => const Divider(),
-                        itemCount: mycontroller.topRatedList.length),
+                        itemCount: Get.find<TopRatedController>()
+                            .topfoundResult
+                            .length),
               ),
             )
           ]),

@@ -7,35 +7,30 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ApiServiceNowPlaying extends GetxController {
+  RxList<NowPlayingModel> foundMovieResult = <NowPlayingModel>[].obs;
+  List<NowPlayingModel> _nowPlayingList = <NowPlayingModel>[];
+  RxBool loading = true.obs;
+
   @override
-  void onInit() {
-    fetchNowPlaying();
-    nowfoundusers = _nowPlayingList;
+  void onInit() async {
+    await fetchNowPlaying();
+    foundMovieResult.value = _nowPlayingList;
     super.onInit();
   }
 
-  void searchRunNow(String enteredKeywords) {
-    // print(enteredKeywords);
-    RxList<NowPlayingModel> result = <NowPlayingModel>[].obs;
-    if (enteredKeywords.isNotEmpty) {
-      result.value = _nowPlayingList
+  void searchRunNow(String enteredKeywords) async {
+    List<NowPlayingModel> result = <NowPlayingModel>[];
+    if (enteredKeywords.isEmpty) {
+      result = _nowPlayingList;
+    } else {
+      result = _nowPlayingList
           .where((movie) =>
               movie.title.toLowerCase().contains(enteredKeywords.toLowerCase()))
           .toList();
-      nowfoundusers.value = result;
-    } else {
-      if (kDebugMode) {
-        print('not workeddd');
-      }
-      nowfoundusers.value = _nowPlayingList;
     }
-    update();
+    foundMovieResult.value = result;
+    refresh();
   }
-
-  RxList<NowPlayingModel> nowfoundusers = <NowPlayingModel>[].obs;
-
-  RxBool loading = true.obs;
-  final RxList<NowPlayingModel> _nowPlayingList = <NowPlayingModel>[].obs;
 
   static const String baseUrl =
       'https://api.themoviedb.org/3/movie/now_playing?api_key=a07e22bc18f5cb106bfe4cc1f83ad8ed';
@@ -47,7 +42,7 @@ class ApiServiceNowPlaying extends GetxController {
     if (response.statusCode == 200 || response.statusCode == 201) {
       final Map<String, dynamic> data = json.decode(response.body);
       final List<dynamic> results = await data['results'];
-      _nowPlayingList.value = results
+      _nowPlayingList = results
           .map((dynamic item) => NowPlayingModel.fromJson(item))
           .toList();
       if (kDebugMode) {
@@ -58,6 +53,10 @@ class ApiServiceNowPlaying extends GetxController {
       // print('nadkoola mone');/
       throw Exception('Failed to load now playing movies');
     }
-    update();
+    refresh();
+  }
+
+  deletetheMovieNow(int index) {
+    Get.find<ApiServiceNowPlaying>().foundMovieResult.removeAt(index);
   }
 }

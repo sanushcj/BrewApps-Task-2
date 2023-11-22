@@ -6,14 +6,16 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class TopRatedController extends GetxController {
+  RxBool loading = true.obs;
+  RxList<TopratedModel> topfoundResult = <TopratedModel>[].obs;
+  List<TopratedModel> topRatedList = <TopratedModel>[];
+
   @override
-  void onInit() {
-    fetchToprated();
+  void onInit() async {
+    await fetchToprated();
+    topfoundResult.value = topRatedList;
     super.onInit();
   }
-
-  RxBool loading = true.obs;
-  RxList<TopratedModel> topRatedList = <TopratedModel>[].obs;
 
   static const String baseUrl =
       'https://api.themoviedb.org/3/movie/top_rated?api_key=a07e22bc18f5cb106bfe4cc1f83ad8ed';
@@ -25,7 +27,7 @@ class TopRatedController extends GetxController {
     if (response.statusCode == 200 || response.statusCode == 201) {
       final Map<String, dynamic> data = json.decode(response.body);
       final List<dynamic> results = await data['results'];
-      topRatedList.value =
+      topRatedList =
           results.map((dynamic item) => TopratedModel.fromJson(item)).toList();
       if (kDebugMode) {
         print(topRatedList.toString());
@@ -35,26 +37,25 @@ class TopRatedController extends GetxController {
       // print('nadkoola mone');/
       throw Exception('Failed to load now playing movies');
     }
-    update();
+    refresh();
   }
-
-  RxList<TopratedModel> topfoundusers = <TopratedModel>[].obs;
 
   void searchRunTop(String enteredKeywords) {
     // print(enteredKeywords);
-    RxList<TopratedModel> result = <TopratedModel>[].obs;
-    if (enteredKeywords.isNotEmpty) {
-      result.value = topfoundusers
+    List<TopratedModel> result = <TopratedModel>[];
+    if (enteredKeywords.isEmpty) {
+      result = topRatedList;
+    } else {
+      result = topRatedList
           .where((movie) =>
               movie.title.toLowerCase().contains(enteredKeywords.toLowerCase()))
           .toList();
-      topfoundusers.value = result;
-    } else {
-      if (kDebugMode) {
-        print('not workeddd');
-      }
-      topfoundusers.value = topRatedList;
     }
-    update();
+    topfoundResult.value = result;
+    refresh();
+  }
+
+  deletetheMovieNow(int index) {
+    topfoundResult.removeAt(index);
   }
 }

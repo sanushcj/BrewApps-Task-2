@@ -3,8 +3,10 @@ import 'package:brewapps_task02/constants/constants.dart';
 import 'package:brewapps_task02/features/home/services/home_controller.dart';
 import 'package:brewapps_task02/features/open/page/open_page.dart';
 import 'package:brewapps_task02/theme/mythemes.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import '../../../common/feedtile.dart';
 
@@ -34,9 +36,9 @@ class MyHomePage extends StatelessWidget {
           },
           child: Column(children: [
             rrHeight20,
-            GetBuilder<ApiServiceNowPlaying>(
-              builder: (mycontroller) => Expanded(
-                child: mycontroller.loading.value == true
+            Obx(
+              () => Expanded(
+                child: Get.find<ApiServiceNowPlaying>().loading.value == true
                     ? ListView.separated(
                         physics: const BouncingScrollPhysics(),
                         itemBuilder: (context, index) =>
@@ -44,25 +46,46 @@ class MyHomePage extends StatelessWidget {
                         separatorBuilder: (context, index) => rrHeight40,
                         itemCount: 5)
                     : ListView.separated(
+                        shrinkWrap: true,
                         physics: const BouncingScrollPhysics(),
-                        itemBuilder: (context, index) => GestureDetector(
+                        itemBuilder: (context, index) {
+                          return Slidable(
+                            endActionPane:
+                                ActionPane(motion: BehindMotion(), children: [
+                              SlidableAction(
+                                backgroundColor: Pallete.redColor,
+                                icon: CupertinoIcons.delete,
+                                onPressed: (context) =>
+                                    Get.find<ApiServiceNowPlaying>()
+                                        .deletetheMovieNow(index),
+                              )
+                            ]),
+                            child: GestureDetector(
                               onTap: () {
                                 Get.to(OpenPAGE(
-                                  detailsNow: mycontroller.nowfoundusers[index],
+                                  detailsNow: Get.find<ApiServiceNowPlaying>()
+                                      .foundMovieResult[index],
                                 ));
                               },
-                              key: ValueKey(
-                                  mycontroller.nowfoundusers[index].id),
+                              // key: ValueKey(Get.find<ApiServiceNowPlaying>().foundMovieResult[index].id),
                               child: FeedTile(
-                                title: mycontroller.nowfoundusers[index].title,
-                                img: mycontroller
-                                    .nowfoundusers[index].posterPath,
-                                subtitle:
-                                    mycontroller.nowfoundusers[index].overview,
+                                title: Get.find<ApiServiceNowPlaying>()
+                                    .foundMovieResult[index]
+                                    .title,
+                                img: Get.find<ApiServiceNowPlaying>()
+                                    .foundMovieResult[index]
+                                    .posterPath,
+                                subtitle: Get.find<ApiServiceNowPlaying>()
+                                    .foundMovieResult[index]
+                                    .overview,
                               ),
                             ),
+                          );
+                        },
                         separatorBuilder: (context, index) => const Divider(),
-                        itemCount: mycontroller.nowfoundusers.length),
+                        itemCount: Get.find<ApiServiceNowPlaying>()
+                            .foundMovieResult
+                            .length),
               ),
             )
           ]),
