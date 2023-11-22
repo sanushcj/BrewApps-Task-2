@@ -8,7 +8,7 @@ class ScreenNavigation extends StatelessWidget {
   ScreenNavigation({Key? key}) : super(key: key);
   static ValueNotifier<int> selectedPageIndex = ValueNotifier(0);
   final _pages = [
-    const MyHomePage(),
+    MyHomePage(),
   ];
   @override
   Widget build(BuildContext context) {
