@@ -1,6 +1,7 @@
 import 'package:brewapps_task02/common/skeltontile.dart';
 import 'package:brewapps_task02/constants/constants.dart';
 import 'package:brewapps_task02/features/home/services/home_controller.dart';
+import 'package:brewapps_task02/features/open/page/open_page.dart';
 import 'package:brewapps_task02/model/nowplaying_model.dart';
 import 'package:brewapps_task02/theme/mythemes.dart';
 import 'package:flutter/foundation.dart';
@@ -11,6 +12,7 @@ import '../../../common/feedtile.dart';
 class MyHomePage extends StatelessWidget {
   MyHomePage({super.key});
 
+  static const routeName = '/home';
 // final  ApiServiceNowPlaying apic = ApiServiceNowPlaying();
 
 // final  List<NowPlayingModel> nowPlaying = [];
@@ -46,13 +48,20 @@ class MyHomePage extends StatelessWidget {
                         itemCount: 5)
                     : ListView.separated(
                         physics: const BouncingScrollPhysics(),
-                        itemBuilder: (context, index) => FeedTile(
-                              title: controllerNowPlaying
-                                  .nowPlayingList[index].title,
-                              img: controllerNowPlaying
-                                  .nowPlayingList[index].posterPath,
-                              subtitle: controllerNowPlaying
-                                  .nowPlayingList[index].overview,
+                        itemBuilder: (context, index) => GestureDetector(
+                              onTap: () {
+                                Get.to(OpenPAGE(
+                                    details: controllerNowPlaying
+                                        .nowPlayingList[index]));
+                              },
+                              child: FeedTile(
+                                title: controllerNowPlaying
+                                    .nowPlayingList[index].title,
+                                img: controllerNowPlaying
+                                    .nowPlayingList[index].posterPath,
+                                subtitle: controllerNowPlaying
+                                    .nowPlayingList[index].overview,
+                              ),
                             ),
                         separatorBuilder: (context, index) => const Divider(),
                         itemCount: controllerNowPlaying.nowPlayingList.length),
