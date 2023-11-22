@@ -1,13 +1,18 @@
 import 'package:brewapps_task02/constants/constants.dart';
-import 'package:brewapps_task02/model/nowplaying_model.dart';
 import 'package:brewapps_task02/theme/mythemes.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class OpenPAGE extends StatelessWidget {
-  const OpenPAGE({super.key, required this.details});
+  const OpenPAGE({
+    super.key,
+    required this.detailsNow,
+  });
   static const routeName = '/theopen';
-  final NowPlayingModel details;
+
+  final dynamic detailsNow;
+
+  // final NowPlayingModel detailsNow =;
 
   @override
   Widget build(BuildContext context) {
@@ -16,13 +21,13 @@ class OpenPAGE extends StatelessWidget {
         backgroundColor: Pallete.orange,
       ),
       body: Container(
-        padding: EdgeInsets.all(25),
+        padding: const EdgeInsets.all(25),
         height: MediaQuery.sizeOf(context).height,
         width: double.infinity,
         decoration: BoxDecoration(
           image: DecorationImage(
               image: NetworkImage(
-                  'https://image.tmdb.org/t/p/original/${details.backdropPath}'),
+                  'https://image.tmdb.org/t/p/original/${detailsNow.backdropPath}'),
               fit: BoxFit.cover),
         ),
         child: Stack(
@@ -43,7 +48,7 @@ class OpenPAGE extends StatelessWidget {
                     Text(
                       overflow: TextOverflow.ellipsis,
                       maxLines: 2,
-                      details.originalTitle,
+                      detailsNow.originalTitle.toString(),
                       style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 25,
@@ -53,7 +58,7 @@ class OpenPAGE extends StatelessWidget {
                     Text(
                       overflow: TextOverflow.ellipsis,
                       maxLines: 2,
-                      details.releaseDate,
+                      detailsNow.releaseDate.toString(),
                       style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 14,
@@ -70,7 +75,7 @@ class OpenPAGE extends StatelessWidget {
                                 color: Pallete.whiteColor,
                               ),
                               Text(
-                                details.voteCount.toString(),
+                                detailsNow.voteCount.toString(),
                                 style: const TextStyle(
                                   color: Pallete.whiteColor,
                                 ),
@@ -101,13 +106,19 @@ class OpenPAGE extends StatelessWidget {
                     rrHeight10,
                     Flexible(
                       fit: FlexFit.loose,
-                      child: Text(
-                        details.overview,
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 10,
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: Pallete.whiteColor,
+                      child: SizedBox(
+                        height: double.infinity,
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.vertical,
+                          child: Text(
+                            detailsNow.overview,
+                            // overflow: TextOverflow.ellipsis,
+                            // maxLines: 10,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: Pallete.whiteColor,
+                            ),
+                          ),
                         ),
                       ),
                     )

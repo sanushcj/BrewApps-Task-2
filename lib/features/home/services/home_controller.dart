@@ -10,11 +10,32 @@ class ApiServiceNowPlaying extends GetxController {
   @override
   void onInit() {
     fetchNowPlaying();
+    nowfoundusers = _nowPlayingList;
     super.onInit();
   }
 
+  void searchRunNow(String enteredKeywords) {
+    // print(enteredKeywords);
+    RxList<NowPlayingModel> result = <NowPlayingModel>[].obs;
+    if (enteredKeywords.isNotEmpty) {
+      result.value = _nowPlayingList
+          .where((movie) =>
+              movie.title.toLowerCase().contains(enteredKeywords.toLowerCase()))
+          .toList();
+      nowfoundusers.value = result;
+    } else {
+      if (kDebugMode) {
+        print('not workeddd');
+      }
+      nowfoundusers.value = _nowPlayingList;
+    }
+    update();
+  }
+
+  RxList<NowPlayingModel> nowfoundusers = <NowPlayingModel>[].obs;
+
   RxBool loading = true.obs;
-  RxList<NowPlayingModel> nowPlayingList = <NowPlayingModel>[].obs;
+  final RxList<NowPlayingModel> _nowPlayingList = <NowPlayingModel>[].obs;
 
   static const String baseUrl =
       'https://api.themoviedb.org/3/movie/now_playing?api_key=a07e22bc18f5cb106bfe4cc1f83ad8ed';
@@ -26,16 +47,17 @@ class ApiServiceNowPlaying extends GetxController {
     if (response.statusCode == 200 || response.statusCode == 201) {
       final Map<String, dynamic> data = json.decode(response.body);
       final List<dynamic> results = await data['results'];
-      nowPlayingList.value = results
+      _nowPlayingList.value = results
           .map((dynamic item) => NowPlayingModel.fromJson(item))
           .toList();
       if (kDebugMode) {
-        print(nowPlayingList.toString());
+        print(_nowPlayingList.toString());
       }
       loading.value = false;
     } else {
       // print('nadkoola mone');/
       throw Exception('Failed to load now playing movies');
     }
+    update();
   }
 }

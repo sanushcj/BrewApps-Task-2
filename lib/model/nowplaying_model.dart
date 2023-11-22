@@ -33,7 +33,6 @@
 class NowPlayingModel {
   bool adult;
   String backdropPath;
-  List<int> genreIds;
   int id;
   String originalLanguage;
   String originalTitle;
@@ -49,7 +48,6 @@ class NowPlayingModel {
   NowPlayingModel({
     required this.adult,
     required this.backdropPath,
-    required this.genreIds,
     required this.id,
     required this.originalLanguage,
     required this.originalTitle,
@@ -67,7 +65,6 @@ class NowPlayingModel {
     return NowPlayingModel(
       adult: json['adult'],
       backdropPath: json['backdrop_path'],
-      genreIds: List<int>.from(json['genre_ids'].map((id) => id)),
       id: json['id'],
       originalLanguage: json['original_language'],
       originalTitle: json['original_title'],

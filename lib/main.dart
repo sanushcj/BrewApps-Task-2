@@ -1,7 +1,6 @@
 import 'package:brewapps_task02/features/bottombar/mybottomnavbar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'features/home/page/homepage.dart';
 import 'routes/routes.dart';
 
 final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();

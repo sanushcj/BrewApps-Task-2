@@ -1,37 +1,23 @@
-class TopRatedModel {
-  int page;
-  List<Result> results;
-  int totalPages;
-  int totalResults;
+// List<Movie> results;
 
-  TopRatedModel({
-    required this.page,
-    required this.results,
-    required this.totalPages,
-    required this.totalResults,
-  });
-}
-
-class Result {
+class TopratedModel {
   bool adult;
   String backdropPath;
-  List<int> genreIds;
   int id;
   String originalLanguage;
   String originalTitle;
   String overview;
   double popularity;
   String posterPath;
-  DateTime releaseDate;
+  String releaseDate;
   String title;
   bool video;
   double voteAverage;
   int voteCount;
 
-  Result({
+  TopratedModel({
     required this.adult,
     required this.backdropPath,
-    required this.genreIds,
     required this.id,
     required this.originalLanguage,
     required this.originalTitle,
@@ -44,4 +30,22 @@ class Result {
     required this.voteAverage,
     required this.voteCount,
   });
+
+  factory TopratedModel.fromJson(Map<String, dynamic> json) {
+    return TopratedModel(
+      adult: json['adult'],
+      backdropPath: json['backdrop_path'],
+      id: json['id'],
+      originalLanguage: json['original_language'],
+      originalTitle: json['original_title'],
+      overview: json['overview'],
+      popularity: json['popularity'],
+      posterPath: json['poster_path'],
+      releaseDate: json['release_date'],
+      title: json['title'],
+      video: json['video'],
+      voteAverage: json['vote_average'],
+      voteCount: json['vote_count'],
+    );
+  }
 }

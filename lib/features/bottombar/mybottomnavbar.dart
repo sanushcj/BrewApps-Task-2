@@ -1,19 +1,21 @@
 import 'package:brewapps_task02/features/home/page/homepage.dart';
+import 'package:brewapps_task02/features/home/services/home_controller.dart';
+import 'package:brewapps_task02/features/top_rated/services/toprated_controller.dart';
+import 'package:brewapps_task02/features/top_rated/page/top_rated_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import 'package:get/get.dart';
 import '../../theme/mythemes.dart';
 
 class ScreenNavigation extends StatelessWidget {
   ScreenNavigation({Key? key}) : super(key: key);
   static ValueNotifier<int> selectedPageIndex = ValueNotifier(0);
-  final _pages = [
-    MyHomePage(),
-  ];
+  final _pages = [MyHomePage(), TopRatedpage()];
   @override
   Widget build(BuildContext context) {
     TextEditingController searchController = TextEditingController();
-
+    ApiServiceNowPlaying controllerNow = Get.put(ApiServiceNowPlaying());
+    TopRatedController controllerTop = Get.put(TopRatedController());
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Pallete.yellow,
@@ -23,7 +25,14 @@ class ScreenNavigation extends StatelessWidget {
           autocorrect: false,
           controller: searchController,
           suffixIcon: const Icon(CupertinoIcons.xmark_circle_fill),
-          onSuffixTap: () => searchController.clear(),
+          onSuffixTap: () {
+            searchController.clear();
+            controllerNow.searchRunNow(searchController.text);
+          },
+          onChanged: (value) => selectedPageIndex == 0
+              ? controllerNow.searchRunNow(value)
+              : controllerTop.searchRunTop(value),
+          // onSubmitted: (value) => controller.searchRunNow(value),
         ),
       ),
       backgroundColor: Colors.transparent,
@@ -58,13 +67,11 @@ class ScreenNavigation extends StatelessWidget {
               ]);
         },
       ),
-      body: SafeArea(
-        child: ValueListenableBuilder(
-          valueListenable: selectedPageIndex,
-          builder: (BuildContext context, int updatedIndex, Widget? _) {
-            return _pages[updatedIndex];
-          },
-        ),
+      body: ValueListenableBuilder(
+        valueListenable: selectedPageIndex,
+        builder: (BuildContext context, int updatedIndex, Widget? _) {
+          return _pages[updatedIndex];
+        },
       ),
     );
   }
